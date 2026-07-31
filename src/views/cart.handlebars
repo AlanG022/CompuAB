@@ -1,0 +1,171 @@
+<section class="cart-section">
+  <a href="/products" class="back-link">
+    ← Seguir comprando
+  </a>
+
+  <h1>Mi carrito</h1>
+
+  <p class="cart-id">
+    ID del carrito: {{cart._id}}
+  </p>
+
+  {{#if cart.products.length}}
+
+    <div class="cart-products">
+
+      {{#each cart.products}}
+
+        <article class="cart-item">
+
+          <div>
+            <h2>{{product.title}}</h2>
+
+            <p>
+              Cantidad: {{quantity}}
+            </p>
+
+            <p>
+              Precio unitario:
+              ${{formatPrice product.price}}
+            </p>
+          </div>
+
+          <div>
+            <strong>
+              ${{formatPrice (multiply product.price quantity)}}
+            </strong>
+
+            <button
+              type="button"
+              class="btn-delete-product"
+              onclick="deleteProduct(
+                '{{../cart._id}}',
+                '{{product._id}}'
+              )"
+            >
+              Eliminar producto
+            </button>
+          </div>
+
+        </article>
+
+      {{/each}}
+
+    </div>
+
+    <div class="cart-total">
+      <span>Total</span>
+
+      <strong>
+        ${{formatPrice total}}
+      </strong>
+    </div>
+
+    <div
+      style="
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+      "
+    >
+      <button
+        type="button"
+        class="btn-delete"
+        onclick="clearCart('{{cart._id}}')"
+      >
+        🗑️ Vaciar carrito
+      </button>
+    </div>
+
+  {{else}}
+
+    <div class="empty-message">
+      <h2>El carrito está vacío</h2>
+
+      <a href="/products">
+        Ver productos
+      </a>
+    </div>
+
+  {{/if}}
+</section>
+
+<script>
+  async function deleteProduct(cartId, productId) {
+    const confirmed = confirm(
+      "¿Seguro que querés eliminar este producto?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/carts/${cartId}/products/${productId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      const data = await response
+        .json()
+        .catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+          data.error ||
+          "No se pudo eliminar el producto"
+        );
+      }
+
+      alert("Producto eliminado correctamente");
+
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+
+      alert(error.message);
+    }
+  }
+
+  async function clearCart(cartId) {
+    const confirmed = confirm(
+      "¿Seguro que querés vaciar el carrito?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/carts/${cartId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      const data = await response
+        .json()
+        .catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+          data.error ||
+          "No se pudo vaciar el carrito"
+        );
+      }
+
+      alert("Carrito vaciado correctamente");
+
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+
+      alert(error.message);
+    }
+  }
+</script>

@@ -1,0 +1,247 @@
+<section class="realtime-page">
+
+  <div class="realtime-hero">
+    <div>
+      <span class="realtime-badge">Administración</span>
+
+      <h1>Administrar productos</h1>
+
+      <p>
+        Cargá y eliminá productos del catálogo de CompuAB.
+      </p>
+    </div>
+  </div>
+
+  <div class="realtime-panel">
+
+    <div class="realtime-panel-header">
+      <h2>Agregar un producto</h2>
+
+      <p>
+        Completá la información del producto.
+      </p>
+    </div>
+
+    <form id="productForm" class="realtime-form">
+
+      <div class="form-group">
+        <label for="title">Nombre del producto</label>
+
+        <input
+          id="title"
+          name="title"
+          type="text"
+          placeholder="Ej: RTX 4060"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="code">Código</label>
+
+        <input
+          id="code"
+          name="code"
+          type="text"
+          placeholder="Ej: GPU-RTX4060"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="category">Categoría</label>
+
+        <select id="category" name="category" required>
+          <option value="">Seleccionar categoría</option>
+          <option value="Placas de video">Placas de video</option>
+          <option value="Procesadores">Procesadores</option>
+          <option value="Memorias RAM">Memorias RAM</option>
+          <option value="Motherboards">Motherboards</option>
+          <option value="Almacenamiento">Almacenamiento</option>
+          <option value="Fuentes">Fuentes</option>
+          <option value="Gabinetes">Gabinetes</option>
+          <option value="Monitores">Monitores</option>
+          <option value="Periféricos">Periféricos</option>
+          <option value="Refrigeración">Refrigeración</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Precio</label>
+
+        <input
+          id="price"
+          name="price"
+          type="number"
+          min="0"
+          placeholder="Ej: 450000"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock disponible</label>
+
+        <input
+          id="stock"
+          name="stock"
+          type="number"
+          min="0"
+          placeholder="Ej: 10"
+          required
+        >
+      </div>
+
+      <div class="form-group form-group-description">
+        <label for="description">Descripción</label>
+
+        <textarea
+          id="description"
+          name="description"
+          placeholder="Descripción del producto"
+          required
+        ></textarea>
+      </div>
+
+      <button class="realtime-submit" type="submit">
+        Agregar producto
+      </button>
+
+    </form>
+
+    <p id="form-message" class="form-message"></p>
+
+  </div>
+
+  <section class="realtime-products-section">
+
+    <div class="realtime-products-header">
+      <div>
+        <span class="realtime-badge dark">Catálogo</span>
+        <h2>Productos cargados</h2>
+      </div>
+    </div>
+
+    <div id="products-container" class="realtime-products-grid">
+
+      {{#each products}}
+
+        <article
+          class="realtime-product-card"
+          id="product-{{_id}}"
+          data-id="{{_id}}"
+        >
+
+          <div class="realtime-product-image">
+
+            {{#if thumbnails.length}}
+
+              <img src="{{thumbnails.[0]}}" alt="{{title}}">
+
+            {{else}}
+
+              <div class="product-default-image">
+                <span>CompuAB</span>
+                <small>Sin imagen</small>
+              </div>
+
+            {{/if}}
+
+          </div>
+
+          <div class="realtime-product-content">
+
+            <span class="realtime-category">
+              {{category}}
+            </span>
+
+            <h3>{{title}}</h3>
+
+            <p class="realtime-description">
+              {{description}}
+            </p>
+
+            <div class="realtime-product-info">
+              <span>Stock: {{stock}}</span>
+
+              <strong>
+                ${{formatPrice price}}
+              </strong>
+            </div>
+
+            <button
+              type="button"
+              class="btn-delete-catalog"
+              onclick="deleteCatalogProduct('{{_id}}')"
+            >
+              Eliminar producto
+            </button>
+
+          </div>
+
+        </article>
+
+      {{else}}
+
+        <div class="empty-message">
+          <h3>No hay productos cargados</h3>
+          <p>Agregá un producto desde el formulario.</p>
+        </div>
+
+      {{/each}}
+
+    </div>
+
+  </section>
+
+</section>
+
+<script>
+  async function deleteCatalogProduct(productId) {
+    const confirmed = window.confirm(
+      "¿Seguro que querés eliminar este producto del catálogo?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/products/${productId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      const data = await response
+        .json()
+        .catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+          data.error ||
+          `No se pudo eliminar el producto. Error ${response.status}`
+        );
+      }
+
+      const productCard = document.getElementById(
+        `product-${productId}`
+      );
+
+      if (productCard) {
+        productCard.remove();
+      }
+
+      alert("Producto eliminado correctamente");
+
+      window.location.reload();
+
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert(error.message);
+    }
+  }
+</script>

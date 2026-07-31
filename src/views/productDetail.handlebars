@@ -1,0 +1,73 @@
+<section class="product-detail-section">
+
+  <a href="/products" class="back-link">
+    ← Volver al catálogo
+  </a>
+
+  <article class="product-detail-card">
+
+    <div class="product-detail-image">
+
+      {{#if product.thumbnails.length}}
+
+        <img
+          src="{{product.thumbnails.[0]}}"
+          alt="{{product.title}}"
+        >
+
+      {{else}}
+
+        <div class="product-default-image">
+          <span>CompuAB</span>
+          <small>Sin imagen disponible</small>
+        </div>
+
+      {{/if}}
+
+    </div>
+
+    <div class="product-detail-content">
+
+      <span class="category">
+        {{product.category}}
+      </span>
+
+      <h1>{{product.title}}</h1>
+
+      <p class="description">
+        {{product.description}}
+      </p>
+
+      <p class="stock">
+        Stock disponible: {{product.stock}}
+      </p>
+
+      <p class="price">
+        ${{formatPrice product.price}}
+      </p>
+
+      <button
+        id="add-to-cart"
+        class="detail-button"
+        data-product-id="{{product._id}}"
+        type="button"
+      >
+        Agregar al carrito
+      </button>
+
+      <a
+        id="view-cart-link"
+        class="view-cart-link"
+        href="#"
+        hidden
+      >
+        Ver mi carrito
+      </a>
+
+      <p id="cart-message"></p>
+
+    </div>
+
+  </article>
+
+</section>

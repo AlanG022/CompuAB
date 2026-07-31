@@ -1,0 +1,101 @@
+<section class="hero">
+  <p class="hero-label">Hardware y tecnología</p>
+
+  <h1>Productos CompuAB</h1>
+
+  <p>
+    Encontrá componentes para mejorar tu computadora.
+  </p>
+</section>
+
+<section class="products-section">
+  <div class="section-header">
+    <div>
+      <h2>Productos disponibles</h2>
+      <p>Página {{page}} de {{totalPages}}</p>
+    </div>
+
+    <form action="/products" method="GET" class="filters">
+      <input
+        type="text"
+        name="query"
+        value="{{query}}"
+        placeholder="Buscar por categoría"
+      >
+
+      <select name="sort">
+        <option value="">Ordenar por precio</option>
+        <option value="asc">Menor precio</option>
+        <option value="desc">Mayor precio</option>
+      </select>
+
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+
+  {{#if products.length}}
+    <div class="products-grid" id="products-container">
+      {{#each products}}
+        <article class="product-card">
+          <div class="product-image">
+            {{#if thumbnails.length}}
+              <img src="{{thumbnails.[0]}}" alt="{{title}}">
+            {{else}}
+              <div class="image-placeholder">
+                Sin imagen
+              </div>
+            {{/if}}
+          </div>
+
+          <div class="product-content">
+            <span class="category">
+              {{category}}
+            </span>
+
+            <h3>{{title}}</h3>
+
+            <p class="description">
+              {{description}}
+            </p>
+
+            <p class="stock">
+              Stock disponible: {{stock}}
+            </p>
+
+            <p class="price">
+              ${{formatPrice price}}
+            </p>
+
+            <a
+              href="/products/{{_id}}"
+              class="detail-button"
+            >
+              Ver producto
+            </a>
+          </div>
+        </article>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="empty-message">
+      <h3>No hay productos disponibles</h3>
+      <p>Agregá productos desde la API.</p>
+    </div>
+  {{/if}}
+
+  <div class="pagination">
+    {{#if hasPrevPage}}
+      <a href="/products?page={{prevPage}}">
+        ← Anterior
+      </a>
+    {{/if}}
+
+    <span>Página {{page}}</span>
+
+    {{#if hasNextPage}}
+      <a href="/products?page={{nextPage}}">
+        Siguiente →
+      </a>
+    {{/if}}
+  </div>
+</section>

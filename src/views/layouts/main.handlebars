@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>{{title}}</title>
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-container">
+
+      <a href="/products" class="logo">
+        Compu<span>AB</span>
+      </a>
+
+      <nav class="navigation">
+
+        <a href="/products">
+          Productos
+        </a>
+
+        <a href="/realtimeproducts">
+          Administrar
+        </a>
+
+        <a id="header-cart-link" href="#">
+          Mi carrito
+        </a>
+
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main-container">
+    {{{body}}}
+  </main>
+
+  <footer class="footer">
+    <p>CompuAB - Hardware y tecnología</p>
+  </footer>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
